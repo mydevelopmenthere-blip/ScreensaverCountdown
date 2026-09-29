@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Countdown to End of Day</title>
+  <style>
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      background: black;
+      overflow: hidden;
+      font-family: "Segoe UI", Arial, sans-serif;
+    }
+
+    .wrap {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      background: #000;
+    }
+
+    .countdown {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 0.05em;
+      white-space: nowrap;
+      user-select: none;
+      font-variant-numeric: tabular-nums;
+      line-height: 1;
+      transform: translateY(-1.5vh);
+    }
+
+    .unit,
+    .colon {
+      font-size: clamp(96px, 11.5vw, 250px);
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
+    .hours {
+      color: rgba(255,255,255,1);
+    }
+
+    .minutes {
+      color: rgba(255,255,255,0.58);
+    }
+
+    .seconds {
+      color: rgba(255,255,255,0.28);
+    }
+
+    .colon-hm {
+      color: rgba(255,255,255,0.72);
+    }
+
+    .colon-ms {
+      color: rgba(255,255,255,0.40);
+    }
+
+    .now {
+      position: absolute;
+      right: 4%;
+      bottom: 4.5%;
+      font-size: clamp(18px, 1.65vw, 30px);
+      font-weight: 300;
+      color: rgba(255,255,255,0.50);
+      letter-spacing: 0.05em;
+      user-select: none;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    @media (max-width: 1000px) {
+      .unit,
+      .colon {
+        font-size: 16vw;
+      }
+
+      .now {
+        font-size: 3vw;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="countdown" id="countdown">
+      <span class="unit hours" id="hours">00</span>
+      <span class="colon colon-hm">:</span>
+      <span class="unit minutes" id="minutes">00</span>
+      <span class="colon colon-ms">:</span>
+      <span class="unit seconds" id="seconds">00</span>
+    </div>
+
+    <div class="now" id="currentTime">12:00:00 AM</div>
+  </div>
+
+  <script>
+    function pad(n) {
+      return String(n).padStart(2, '0');
+    }
+
+    function updateClock() {
+      const now = new Date();
+
+      const end = new Date();
+      end.setHours(24, 0, 0, 0);
+
+      const diff = end - now;
+      const totalSeconds = Math.max(0, Math.floor(diff / 1000));
+
+      const hours = Math.floor(totalSeconds / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+
+      document.getElementById('hours').textContent = pad(hours);
+      document.getElementById('minutes').textContent = pad(minutes);
+      document.getElementById('seconds').textContent = pad(seconds);
+
+      const hour24 = now.getHours();
+      const ampm = hour24 >= 12 ? 'PM' : 'AM';
+      const hour12 = hour24 % 12 || 12;
+
+      document.getElementById('currentTime').textContent =
+        `${pad(hour12)}:${pad(now.getMinutes())}:${pad(now.getSeconds())} ${ampm}`;
+    }
+
+    updateClock();
+    setInterval(updateClock, 1000);
+  </script>
+</body>
+</html>
